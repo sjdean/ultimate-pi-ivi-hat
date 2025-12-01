@@ -1,0 +1,92 @@
+(kicad_sch (version 20231120) (generator eeschema)
+
+  (uuid 85c3f4a1-1d8e-4b2f-9f2d-7e8c9a1b2c3d)
+
+  (paper "A3")
+
+  (title_block
+    (title "Ultimate Pi IVI Hat – v0.2")
+    (date "2025-12-01")
+    (rev "0.2")
+    (company "Valkyrie Project – sjdean + Grok")
+  )
+
+  (lib_symbols
+    ;; Use KiCad’s built-in symbols + power flags
+  )
+
+  ;; +12V from car
+  (symbol (lib_id "power:+12V") (at 80 50 0) (unit 1)
+    (in_bom yes) (on_board yes)
+    (property "Reference" "#PWR01" (at 80 53.34 0) (effects hide))
+    (property "Value" "+12V_CAR" (at 80 45 0))
+    (uuid 10000000-0000-0000-0000-000000000001)
+  )
+
+  ;; MP9943 Automotive DCDC → +5V clean rail
+  (symbol (lib_id "Regulator_Switching:MP9943") (at 120 50 0) (unit 1)
+    (property "Reference" "U1")
+    (property "Value" "MP9943")
+    (property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
+    (uuid 20000000-0000-0000-0000-000000000002)
+  )
+
+  ;; +5V rail
+  (symbol (lib_id "power:+5V") (at 180 50 0) (unit 1)
+    (property "Value" "+5V_SYS" (at 180 45 0))
+    (uuid 30000000-0000-0000-0000-000000000003)
+  )
+
+  ;; TPA3255 4×75W Class-D Amplifier
+  (symbol (lib_id "Amplifier_Audio:TPA3255") (at 300 120 0) (unit 1)
+    (property "Reference" "U3")
+    (property "Value" "TPA3255")
+    (property "Footprint" "Package_QFP:TQFP-56_10x10mm_P0.5mm")
+    (property "Datasheet" "https://www.ti.com/lit/ds/symlink/tpa3255.pdf")
+    (uuid 40000000-0000-0000-0000-000000000004)
+  )
+
+  ;; 4× Automotive relays – factory radio bypass
+  (symbol (lib_id "Relay:Relay_SPDT") (at 380 100 0) (mirror x) (unit 1)
+    (property "Reference" "K1" (at 380 80 0))
+    (uuid 50000000-0000-0000-0000-000000000005)
+  )
+  (symbol (lib_id "Relay:Relay_SPDT") (at 380 120 0) (mirror x) (unit 1)
+    (property "Reference" "K2" (at 380 100 0))
+  )
+  (symbol (lib_id "Relay:Relay_SPDT") (at 380 140 0) (mirror x) (unit 1)
+    (property "Reference" "K3" (at 380 120 0))
+  )
+  (symbol (lib_id "Relay:Relay_SPDT") (at 380 160 0) (mirror x) (unit 1)
+    (property "Reference" "K4" (at 380 140 0))
+  )
+
+  ;; Speaker terminals (Phoenix Contact or screw blocks)
+  (symbol (lib_id "Connector:TerminalBlock_Phoenix_PT-4") (at 450 100 0) (unit 1)
+    (property "Reference" "J10" (at 450 80 0))
+    (property "Value" "Front_L+,L-,R+,R-" (at 450 75 0))
+  )
+
+  ;; Pi 40-pin header
+  (symbol (lib_id "Connector:Conn_02x20_Odd_Even") (at 80 200 90) (unit 1)
+    (property "Reference" "J1")
+    (property "Value" "Raspberry_Pi_GPIO")
+    (uuid 60000000-0000-0000-0000-000000000006)
+  )
+
+  ;; Simple wiring (you’ll tidy in KiCad)
+  (wire (pts (xy 80 50) (xy 120 50)) (stroke (width 1) (type solid)))
+  (wire (pts (xy 140 50) (xy 180 50)) (stroke (width 1) (type solid)))
+  (wire (pts (xy 80 50) (xy 300 130)) (stroke (width 1.5) (type solid)))  ;; 12V → amp
+  (wire (pts (xy 180 50) (xy 300 110)) (stroke (width 0.8) (type solid))) ;; 5V → amp logic
+  (wire (pts (xy 80 200) (xy 300 140)) (stroke (width 0.5) (type solid))) ;; I2S from Pi
+
+  (label "+12V_CAR" (at 90 45 0))
+  (label "+5V_SYS" (at 190 45 0))
+  (label "I2S_BCLK" (at 200 200 0))
+  (label "AMP_ENABLE" (at 350 180 0))
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
