@@ -1,0 +1,72 @@
+(kicad_sch (version 20231120) (generator eeschema)
+
+  (uuid 9f8e7d6c-5b4a-3c2d-1e0f-9d8c7b6a5f4e)
+
+  (paper "A3")
+
+  (title_block
+    (title "Ultimate Pi IVI Hat – v0.3")
+    (date "2025-12-01")
+    (rev "0.3")
+    (company "Valkyrie Project")
+    (comment 1 "CAN-FD + STM32G0 ignition brain added")
+  )
+
+  ;; All previous stuff from v0.2 is here (power, amp, etc.)
+  ;; Now adding the ignition monitor section
+
+  ;; STM32G031K8T6 (LQFP-32) – ultra-low-power brain
+  (symbol (lib_id "MCU_ST_STM32G0:STM32G031K8Tx") (at 500 200 0) (unit 1)
+    (property "Reference" "U10")
+    (property "Value" "STM32G031K8T6")
+    (property "Footprint" "Package_LQFP:LQFP-32_7x7mm_P0.8mm")
+    (uuid aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)
+  )
+
+  ;; MCP2518FD CAN-FD transceiver
+  (symbol (lib_id "Driver_CAN:MCP2518FD") (at 500 150 0) (unit 1)
+    (property "Reference" "U11")
+    (property "Value" "MCP2518FD")
+    (property "Footprint" "Package_SO:SOIC-14_3.9x8.7mm_P1.27mm")
+    (uuid bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb)
+  )
+
+  ;; TJA1051T/3 CAN transceiver (optional second channel)
+  (symbol (lib_id "Driver_CAN:TJA1051T_3") (at 540 150 0) (unit 1)
+    (property "Reference" "U12")
+  )
+
+  ;; 12V P-MOSFET load switch (e.g. DMP3099L)
+  (symbol (lib_id "Transistor_FET:DMP3099L") (at 450 80 0) (unit 1)
+    (property "Reference" "Q1")
+    (property "Value" "DMP3099L-7")
+  )
+
+  ;; Supercap 5.5V 1F (optional instant wake)
+  (symbol (lib_id "Device:C_Supercap") (at 480 80 0) (unit 1)
+    (property "Value" "1F_5.5V")
+  )
+
+  ;; ACC+ ignition sense input (from car fusebox)
+  (symbol (lib_id "power:+12V") (at 400 50 0) (unit 1)
+    (property "Value" "ACC_12V" (at 400 45 0))
+  )
+
+  ;; Connections
+  (wire (pts (xy 400 50) (xy 500 220)) (stroke (width 1) (type solid))) ;; ACC → STM32 wake
+  (wire (pts (xy 500 180) (xy 450 80)) (stroke (width 1.5) (type solid))) ;; STM32 → P-MOSFET gate
+  (wire (pts (xy 80 50) (xy 450 80)) (stroke (width 2) (type solid)))   ;; Main 12V rail through load switch
+
+  (label "IGNITION_WAKE" (at 460 60 0))
+  (label "MAIN_POWER_ENABLE" (at 470 90 0))
+
+  ;; CAN-H/CAN-L screw terminals
+  (symbol (lib_id "Connector:TerminalBlock_Phoenix_2pin") (at 580 150 0) (unit 1)
+    (property "Reference" "J20")
+    (property "Value" "CAN_H  CAN_L")
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
