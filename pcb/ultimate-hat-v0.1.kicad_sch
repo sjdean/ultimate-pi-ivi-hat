@@ -1,0 +1,156 @@
+(kicad_sch (version 20231120) (generator eeschema)
+
+  (uuid 00000000-0000-0000-0000-000000000001)
+
+  (paper "A3")
+
+  (title_block
+    (title "Ultimate Pi IVI Hat - v0.1")
+    (company "Valkyrie Project")
+    (rev "0.1")
+    (date "2025-11-29")
+    (source "Grok + sjdean")
+  )
+
+  (lib_symbols
+    ;; Power Symbols
+    (symbol "power:+12V" ... )  ;; (use KiCad default, or paste full from earlier)
+
+    ;; Automotive DCDC: MP9943 (Monolithic Power Systems)
+    (symbol "Regulator_Linear:MP9943" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
+      (property "Reference" "U1" (at 0 0 0))
+      (property "Value" "MP9943" (at 0 0 0))
+      (property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" (at 0 0 0) hide)
+      (property "Datasheet" "https://www.monolithicpower.com/en/mp9943.html" (at 0 0 0) hide)
+      ;; Pins: VIN (12V), EN, SW, FB, GND, BST, CS, SS
+      (symbol "MP9943"
+        (rectangle (start -3.81 -3.81) (end 3.81 3.81)
+          (stroke (width 0.254) (type solid))
+          (fill (type outline))
+        )
+        (pin input line (at -5.08 0 180)
+          (length 2.54) (name "VIN") (number "1")
+        )
+        (pin input line (at -5.08 1.27 180)
+          (length 2.54) (name "EN") (number "2")
+        )
+        ;; ... (full 8 pins — copy from datasheet symbol)
+      )
+    )
+
+    ;; USB Hub: GL3523 (Genesys Logic)
+    (symbol "Connector:USB_Hub_GL3523" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
+      (property "Reference" "U2" (at 0 0 0))
+      (property "Value" "GL3523" (at 0 0 0))
+      (property "Footprint" "Package_QFN:QFN-76_9x9mm_P0.4mm" (at 0 0 0) hide)
+      ;; Pins: VBUS, D+/D-, PWR_EN, etc. (48-pin QFN)
+      (symbol "GL3523"
+        ;; ... (rectangle + pins from datasheet — ~20 key pins exposed)
+      )
+    )
+
+    ;; Pi GPIO Header (40-pin)
+    (symbol "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical" ... )  ;; Default KiCad
+
+    ;; Future V-Bus 60-pin FPC
+    (symbol "Connector_FPC:FPC_60pin_0.5mm" ... )  ;; Custom — I'll detail in next commit
+  )
+
+  ;; Sheet for Power Section
+  (sheet (at 0 0) (size 100 100)
+    (stroke (width 0.254) (type solid))
+    (fill (type none))
+    (name "Power + USB Hub")
+    (fields_autoplaced)
+    (uuid 00000000-0000-0000-0000-000000000008)
+  )
+
+  ;; +12V Input (from car harness)
+  (symbol (lib_id "power:+12V") (at 50 50 0) (unit 1)
+    (uuid 00000000-0000-0000-0000-000000000009)
+    (property "Value" "+12V_CAR" (at 50 50 0))
+  )
+
+  ;; DCDC Converter (U1: MP9943)
+  (symbol (lib_id "Regulator_Linear:MP9943") (at 70 50 0) (unit 1)
+    (uuid 00000000-0000-0000-0000-000000000010)
+    (property "Reference" "U1")
+    (pin "VIN" (uuid 00000000-0000-0000-0000-000000000011))  ;; Connected to +12V
+    (pin "SW" (uuid 00000000-0000-0000-0000-000000000012))   ;; To inductor
+    (pin "FB" (uuid 00000000-0000-0000-0000-000000000013))  ;; Feedback divider
+    ;; Nets: VIN → +12V, VOUT → +5V rail
+  )
+
+  ;; Inductor + Caps for DCDC (passives)
+  (symbol (lib_id "Device:L") (at 80 50 0) (unit 1)  ;; 10uH inductor
+    (uuid 00000000-0000-0000-0000-000000000014)
+  )
+  (symbol (lib_id "Device:C") (at 90 50 0) (unit 1)  ;; 100uF output cap
+    (uuid 00000000-0000-0000-0000-000000000015)
+    (property "Value" "100uF")
+  )
+
+  ;; +5V Rail
+  (symbol (lib_id "power:+5V") (at 100 50 0) (unit 1)
+    (uuid 00000000-0000-0000-0000-000000000016)
+  )
+
+  ;; USB Hub (U2: GL3523)
+  (symbol (lib_id "Connector:USB_Hub_GL3523") (at 120 50 0) (unit 1)
+    (uuid 00000000-0000-0000-0000-000000000017)
+    (property "Reference" "U2")
+    (pin "VBUS_IN" (uuid 00000000-0000-0000-0000-000000000018))  ;; From +5V
+    (pin "D+_UP" (uuid 00000000-0000-0000-0000-000000000019))   ;; To Pi USB
+    (pin "D-_UP" (uuid 00000000-0000-0000-0000-000000000020))
+    ;; Downstream ports: 5× USB-A (screw terminals or headers)
+    (pin "VBUS_OUT1" (uuid 00000000-0000-0000-0000-000000000021))  ;; Port 1 (GPS dedicated)
+    ;; ... (repeat for ports 2-5)
+  )
+
+  ;; Pi GPIO Header (J1: 40-pin)
+  (symbol (lib_id "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical") (at 50 80 90) (unit 1)
+    (uuid 00000000-0000-0000-0000-000000000022)
+    (property "Reference" "J1")
+    (property "Value" "Pi_GPIO")
+    ;; Key pins: 5V (from our +5V rail), GND, I2C (for modules), GPIO for wake
+    (pin "Pin_2" (uuid 00000000-0000-0000-0000-000000000023))  ;; 5V
+    (pin "Pin_1" (uuid 00000000-0000-0000-0000-000000000024))  ;; 3.3V (from LDO later)
+    ;; ... (full 40 pins mapped)
+  )
+
+  ;; Wires/Nets
+  (wire (pts (xy 50 50) (xy 70 50))
+    (stroke (width 0.508) (type solid))  ;; Thick for power
+    (net 1)  ;; +12V net
+    (uuid 00000000-0000-0000-0000-000000000025)
+  )
+  (wire (pts (xy 90 50) (xy 100 50))
+    (stroke (width 0.508) (type solid))
+    (net 2)  ;; +5V net
+    (uuid 00000000-0000-0000-0000-000000000026)
+  )
+  (wire (pts (xy 100 50) (xy 120 50))
+    (stroke (width 0.508) (type solid))
+    (net 2)  ;; +5V to USB hub
+    (uuid 00000000-0000-0000-0000-000000000027)
+  )
+  (wire (pts (xy 100 50) (xy 50 80))
+    (stroke (width 0.508) (type solid))
+    (net 2)  ;; +5V to Pi header
+    (uuid 00000000-0000-0000-0000-000000000028)
+  )
+
+  ;; Labels
+  (label "+12V_CAR" (at 50 55 0)
+    (effects (font (size 1.27 1.27)))
+    (uuid 00000000-0000-0000-0000-000000000029)
+  )
+  (label "+5V_SYS" (at 100 55 0)
+    (effects (font (size 1.27 1.27)))
+    (uuid 00000000-0000-0000-0000-000000000030)
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
