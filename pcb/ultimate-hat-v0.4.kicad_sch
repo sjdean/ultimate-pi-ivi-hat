@@ -1,0 +1,57 @@
+(kicad_sch (version 20231120) (generator eeschema)
+
+  (uuid c3d2e1f0-9876-5432-1098-76543210fedc)
+
+  (paper "A3")
+
+  (title_block
+    (title "Ultimate Pi IVI Hat – v0.4")
+    (date "2025-12-01")
+    (rev "0.4")
+    (company "Valkyrie Project")
+    (comment 1 "DAB+/FM radio (SI4684 + CM108) added")
+  )
+
+  ;; SI4684 DAB/DAB+/FM chip
+  (symbol (lib_id "RF:SI4684") (at 700 150 0) (unit 1)
+    (property "Reference" "U20")
+    (property "Value" "SI4684-A10")
+    (property "Footprint" "Package_QFN:QFN-48_7x7mm_P0.5mm")
+    (property "Datasheet" "https://www.silabs.com/documents/public/data-sheets/Si4684.pdf")
+    (uuid dabdabda-bdab-dabd-abda-bdabdabdabda)
+  )
+
+  ;; CM108B USB audio bridge (turns I2S → USB sound card)
+  (symbol (lib_id "Audio:CM108") (at 750 150 0) (unit 1)
+    (property "Reference" "U21")
+    (property "Value" "CM108B")
+    (property "Footprint" "Package_SSOP:SSOP-28_5.3x10.2mm_P0.65mm")
+    (uuid usb10810-8108-1081-0810-810810810810)
+  )
+
+  ;; 24.576 MHz crystal for SI4684
+  (symbol (lib_id "Device:Crystal_GND24") (at 700 120 0) (unit 1)
+    (property "Reference" "Y1")
+    (property "Value" "24.576MHz")
+  )
+
+  ;; DAB antenna Fakra connector
+  (symbol (lib_id "Connector:FAKRA") (at 780 150 0) (unit 1)
+    (property "Reference" "J30")
+    (property "Value" "DAB_ANTENNA")
+  )
+
+  ;; Connections
+  (wire (pts (xy 700 160) (xy 750 160)) (stroke (width 0.5) (type solid))) ;; I2C SDA/SCL
+  (wire (pts (xy 700 170) (xy 750 170)) (stroke (width 0.5) (type solid))) ;; I2S audio
+  (wire (pts (xy 750 140) (xy 80 200))  (stroke (width 0.5) (type solid))) ;; USB D+/D- to Pi header
+  (wire (pts (xy 180 50) (xy 750 130))  (stroke (width 0.5) (type solid))) ;; +5V to both chips
+
+  (label "DAB_I2C_SDA" (at 725 155 0))
+  (label "DAB_I2S" (at 725 165 0))
+  (label "USB_DAB" (at 750 135 0))
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
