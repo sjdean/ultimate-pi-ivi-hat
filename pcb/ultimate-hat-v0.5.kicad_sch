@@ -1,0 +1,61 @@
+(kicad_sch (version 20231120) (generator eeschema)
+
+  (uuid f1f1f1f1-2222-3333-4444-555555555555)
+
+  (paper "A3")
+
+  (title_block
+    (title "Ultimate Pi IVI Hat – v0.5")
+    (date "2025-12-01")
+    (rev "0.5")
+    (company "Valkyrie Project")
+    (comment 1 "GPS + 60-pin V-Bus modular connector")
+    (comment2 "This is now the final schematic revision before PCB layout")
+  )
+
+  ;; u-blox MAX-M10S GNSS module
+  (symbol (lib_id "RF_Module:u-blox_MAX-M10S") (at 900 150 0) (unit 1)
+    (property "Reference" "U30")
+    (property "Value" "MAX-M10S-00B")
+    (property "Footprint" "Module:u-blox_MAX-M10S")
+    (uuid gpsgpsgp-sgps-gpsg-psgp-sgpsgpsgpsgp)
+  )
+
+  ;; Fakra GPS antenna connector (blue)
+  (symbol (lib_id "Connector:FAKRA_Coded") (at 950 150 0) (unit 1)
+    (property "Reference" "J40")
+    (property "Value" "GPS_ANTENNA")
+  )
+
+  ;; 60-pin 0.5 mm pitch FPC — the Valkyrie Bus (V-Bus)
+  (symbol (lib_id "Connector:Conn_02x30_Odd_Even_0.5mm") (at 800 300 0) (unit 1)
+    (property "Reference" "J50")
+    (property "Value" "V-BUS_60PIN")
+    (property "Description" "Valkyrie modular ecosystem connector – carries 12V, 5V, CAN-FD×2, I2C, I2S, USB2, USB3, UART, GPIO")
+    (uuid vbusvbus-bvus-vusb-subv-bvusvbusvbus)
+  )
+
+  ;; Key nets on V-Bus (example pinout — we’ll publish full spec tomorrow)
+  ;; Pin 1-2  : +12V_IN
+  ;; Pin 3-6  : GND
+  ;; Pin 7-8  : +5V_OUT (3A)
+  ;; Pin 9-10 : CAN0_H/L
+  ;; Pin 11-12: CAN1_H/L
+  ;; Pin 13-14-15: I2C_SDA/SCL
+  ;; Pin 16-19: I2S (BCLK, LRCLK, DATA×2)
+  ;; Pin 20-23: USB2 D+/D- (two pairs)
+  ;; Pin 30-33: UART_TX/RX/GPIO for GPS
+  ;; Pin 59-60: IGNITION_WAKE + SHUTDOWN_REQ
+
+  ;; Connections
+  (wire (pts (xy 180 50) (xy 900 140)) (stroke (width 0.6) (type solid))) ;; +5V → GPS
+  (wire (pts (xy 80 50) (xy 800 310)) (stroke (width 1.5) (type solid)))  ;; +12V → V-Bus
+  (wire (pts (xy 500 200) (xy 800 320)) (stroke (width 0.8)) ;; CAN0 from STM32 → V-Bus
+  (wire (pts (xy 700 160) (xy 800 330)) (stroke (width 0.6))) ;; DAB I2C → V-Bus
+
+  (label "V-BUS_READY" (at 810 290 0))
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
